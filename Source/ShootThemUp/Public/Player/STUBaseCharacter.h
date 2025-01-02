@@ -17,7 +17,6 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
-    // Sets default values for this character's properties
     ASTUBaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
@@ -33,14 +32,23 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextComponent;
 
-    // Called when the game starts or when spawned
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* DeathAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    float LifeSpanOnDeath = 5.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);
+
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
+
     virtual void BeginPlay() override;
 
 public:
-    // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
@@ -58,4 +66,10 @@ private:
 
     void OnStartRunning();
     void OnStopRunning();
+
+    void OnDeath();
+    void OnHealthChanged(float Health);
+
+    UFUNCTION()
+    void OnGroundLanded(const FHitResult& Hit);
 };
